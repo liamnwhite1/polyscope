@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.5)
 # Create a library for the viewer code
 add_library(
     glad
+    STATIC
     glad.c
     )
 
