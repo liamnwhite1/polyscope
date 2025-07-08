@@ -132,7 +132,7 @@ if("${POLYSCOPE_BACKEND_OPENGL3_EGL}")
 
       # We intentionally *do not* list this as a shared library dependency, it gets loaded optionally at runtime
       # via dlopen(). See explanation in gl_engine_egl.cpp.
-      # list(APPEND BACKEND_LIBS EGL) 
+      # list(APPEND BACKEND_LIBS EGL)
     endif()
 
   endif()
@@ -361,14 +361,23 @@ SET(HEADERS
   ${INCLUDE_ROOT}/volume_grid_quantity.h
   ${INCLUDE_ROOT}/volume_grid_scalar_quantity.h
   ${INCLUDE_ROOT}/weak_handle.h
+  ${INCLUDE_ROOT}/transformation_gizmo.h
+  ${INCLUDE_ROOT}/widget.h
+  ${INCLUDE_ROOT}/weak_handle.h
+  ${INCLUDE_ROOT}/internal.h
+  ${INCLUDE_ROOT}/../KHR/khrplatform.h
+  ${INCLUDE_ROOT}/../glad/glad.h
 )
 
 # Create a single library for the project
-add_library(polyscope ${SRCS} ${BACKEND_SRCS} ${HEADERS} ${BACKEND_HEADERS})
+add_library(polyscope SHARED ${SRCS} ${BACKEND_SRCS})
 
-# Mark the library target and its headers as installable
-install(TARGETS polyscope)
-install(DIRECTORY ${INCLUDE_ROOT}/ DESTINATION "${CMAKE_INSTALL_PREFIX}/include/polyscope")
+target_sources(
+  polyscope
+  PUBLIC FILE_SET HEADERS
+  BASE_DIRS ${INCLUDE_ROOT}/..
+  FILES ${HEADERS} ${BACKEND_HEADERS}
+)
 
 # Required compiler settings
 set_property(TARGET polyscope PROPERTY CXX_STANDARD 11)
@@ -376,9 +385,33 @@ set_property(TARGET polyscope PROPERTY CXX_STANDARD_REQUIRED TRUE)
 set_target_properties(polyscope PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
 add_definitions(-DNOMINMAX)
 
-# Include settings
-target_include_directories(polyscope PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/../include")
-
 # Link settings
-target_link_libraries(polyscope PUBLIC imgui glm::glm)
+target_link_libraries(polyscope PUBLIC imgui::imgui glm::glm)
 target_link_libraries(polyscope PRIVATE "${BACKEND_LIBS}" stb nlohmann_json::nlohmann_json MarchingCube::MarchingCube)
+
+include(GNUInstallDirs)
+include(CMakePackageConfigHelpers)
+
+set(CONFIG_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}")
+
+install(
+  TARGETS  ${PROJECT_NAME}
+  EXPORT   ${PROJECT_NAME}Targets
+  FILE_SET HEADERS
+)
+install(
+  EXPORT ${PROJECT_NAME}Targets
+  NAMESPACE polyscope::
+  DESTINATION ${CONFIG_INSTALL_DIR}
+)
+
+configure_package_config_file(
+  ${CMAKE_SOURCE_DIR}/config.cmake.in
+  ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
+  INSTALL_DESTINATION ${CONFIG_INSTALL_DIR}
+)
+install(
+  FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
+  DESTINATION ${CONFIG_INSTALL_DIR}
+)
+

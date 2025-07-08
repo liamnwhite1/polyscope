@@ -6,7 +6,7 @@
 
 #include "polyscope/render/opengl/gl_engine_egl.h"
 
-#include "backends/imgui_impl_opengl3.h"
+#include "imgui_impl_opengl3.h"
 #include "polyscope/render/engine.h"
 
 #include "stb_image.h"
