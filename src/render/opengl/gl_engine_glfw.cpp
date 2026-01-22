@@ -4,7 +4,7 @@
 
 #include "polyscope/render/opengl/gl_engine_glfw.h"
 
-#include "backends/imgui_impl_opengl3.h"
+#include "imgui_impl_opengl3.h"
 #include "polyscope/polyscope.h"
 #include "polyscope/render/engine.h"
 
@@ -148,7 +148,7 @@ void GLEngineGLFW::initializeImGui() {
   bindDisplay();
 
   ImGui::CreateContext(); // must call once at start
-  ImPlot::CreateContext(); 
+  ImPlot::CreateContext();
 
   // Set up ImGUI glfw bindings
   ImGui_ImplGlfw_InitForOpenGL(mainWindow, true);

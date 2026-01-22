@@ -6,7 +6,7 @@
 
 #include "polyscope/render/opengl/gl_engine_egl.h"
 
-#include "backends/imgui_impl_opengl3.h"
+#include "imgui_impl_opengl3.h"
 #include "polyscope/render/engine.h"
 
 #include "stb_image.h"
@@ -257,7 +257,7 @@ void GLEngineEGL::initialize() {
     info(0, ss.str());
   }
 
-  if(options::uiScale < 0) { // only set from system if the value is -1, meaning not set yet
+  if (options::uiScale < 0) { // only set from system if the value is -1, meaning not set yet
     options::uiScale = 1.;
   }
 
@@ -437,7 +437,7 @@ void GLEngineEGL::initializeImGui() {
   // functions
 
   ImGui::CreateContext();
-  ImPlot::CreateContext(); 
+  ImPlot::CreateContext();
   configureImGui();
 }
 
